@@ -7,3 +7,8 @@ module Poser
     user == username && pass == password
   end
 end
+
+# require all sub-files
+Dir.glob(File.dirname(__FILE__) + "/poser/**/*.rb").each do |file|
+  require file
+end
