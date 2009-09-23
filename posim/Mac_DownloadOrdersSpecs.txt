@@ -1,0 +1,155 @@
+//This document specifies the format of the data structures with import codes that is used with the 
+//ePosimLinker/Handler implementation used with custom eCommerce web site integration for POSIM Mac.
+//Note that strings too long to fit into the database are truncated without error or warning messages.
+//Note that this file needs to conform to MacRoma standards and the fields are PIPE "|" delimited.
+//Note that each line should be terminated by a carriage return. "\r" in PHP, vbcr in ASP, Char(13) ASCII CR
+//The import location for this file is defined in POSIM Share -> File - > Web Gateway In folder.
+//The file name must be "Invoices" - POSIM share looks in the web gateway in folder for the file "Invoices"
+
+// File Structure is one Import Code per line. Multiple import codes can be contained in one flat file.
+// {Import Codes}|Format||||
+// File must with the three chars "EOF"
+
+'AddWInv'
+'AddOneWInvLine'
+'EOF'
+
+//Import Code: AddWInv 
+//This import code imports one working invoice (Header) per import code.  
+//The fields are separated by the pipe character "|"
+//Each line is to be terminated by a carriage return. "\r" in PHP, vbcr in ASP, Char(13) ASCII CR
+// 54 positions (starts at zero - 0-53)
+//The InvoiceID should be prefixed with "WEB" and should start at 1000. Example "WEB1000"
+//The reason we recommend to start at 1000 is because the window that displays the orders in a list
+//will sort them alphanumerically from left to right. When this happens order WEB10 will show up before WEB2.
+//WEB100 will show up before WEB99. 
+//This causes issues when the order numbers are not in the correct order when the end user goes looking for the order
+
+// Fields of the AddWInv Import Code:
+Column (0) Import Code - Currently "AddWInv"
+Column (1) InvoiceID: Str10; (Prefix with WEB - Start at 1000)
+
+// freeform for us
+Column (2) CustomerID: Str15;
+Column (3) CustomerPO: Str15; // Purchase order
+Column (4) DeptNum: Str10;
+Column (5) SalespersonID: Str10;
+
+Column (6) Date: Date and Time in format specified by System Preferences
+Column (7) BillName: Str30;
+Column (8) BillAddress: Str30;
+Column (9) BillCity: Str30;
+Column (10) BillStateOrProvince: Str4;
+Column (11) BillZipOrPostalCode: Str10;
+Column (12) BillPhone: Str14;
+Column (13) BillExt: Str4;
+Column (14) ShipName: Str30;
+Column (15) ShipAddress: Str30;
+Column (16) ShipCity: Str30;
+Column (17) ShipStateOrProvince: Str4;
+Column (18) ShipZipOrPostalCode
+Column (19) ShipPhone: Str14;
+Column (20) ShipExt: Str4;
+
+Column (21) Terms: Str15;    // for customer PO
+Column (22) ShipVia: Str15;  // ignore this, not necessary.
+Column (23) InvTaxable: T or F -- "should we charge tax or not?"
+Column (24) TaxRate1: double;  -- [0.0, 1.0]
+Column (25) DiscRate: single; // 0.10
+Column (26) TaxDist: Str6; -- 98115S aka zip + 1st letter of city
+Column (27) BillAddress2: Str30;
+Column (28) ShipAddress2: Str30;
+Column (29) TaxCalcMeth: whole number 0 => pre-defined tax codes (tax by rate) 1 => custom tax codes (tax by table);
+  - 0 is rate
+  - 1 is custom
+Column (30) TaxRate2: double;
+
+Column (31) TaxAmt1: total tax for tax rate 1 when using pre-defined tax codes
+Column (32) TaxAmt2 :=total tax for taz rate 2 when using pre-defined tax codes
+Column (33) TotalTaxAmt: taxAmt1 + taxAmt2
+Column (34) SalesOrderID: not used for working invoices
+Column (35) TaxIncluded: Australian tax included
+Column (36) LineItemDisc: T or F controls whether discounting is done by line-item or for the whole invoice  // discount by marked line item for invoice
+Column (37) BillingID: ?
+Column (38) BillFName: Str21;
+Column (39) BillMI: Str1;
+Column (40) BillLName: Str1;
+
+Column (41) BillCountry: Str20;
+Column (42) ShipFName: Str21;
+Column (43) ShipMI: Str1;
+Column (44) ShipLName: Str21;
+Column (45) ShipCountry: Str20;
+
+Column (46) CCNum: Str30; //CCNum - DO NOT USE - POST PCI Requirements...Must use live gateway for all CC processing.
+Column (47) CCExpire: Date; //DO NOT USE - POST PCI Requirements...Must use live gateway for all CC processing.
+
+Column (48) Register: whole number; identifies register ID that will post.  leave as zero for working invoice  // leave zero
+Column (49) User := TruncStr(LGetNextStr(index),LenOfUserID); // blank
+
+Column (50) CCAuth: Str75; // pre-authorization of credit card
+Column (51) WebInvoice: always true (leave blank)
+
+Column (52) Billing eMail Address (Added in POSIM 4.5.9+)
+Column (53) Shipping eMail Address (Added in POSIM 4.5.9+)
+
+//Example Flat Structure:
+
+AddWInv|WEB1102|WEBC1003||WEB|WEB|6/10/2008|ePosim|123 somestreet|kaysville|UT|84037|8015461616||ePosim|123 somestreet|kaysville|UT|84037| 8015461616||||T|0.0625|||||0|0|24.12|0|24.12|||||Daren||Sabin|US|Daren Sabin|||US|4111111111111111|0109|0||||daren@eposim.net|daren@eposim.net
+
+
+//Import Code: AddOneWInvLine
+//This import code imports one working invoice line-item per import code.  
+//The fields are separated by the pipe character "|"
+//Each line is to be terminated by a carriage return. "\r" in PHP, vbcr in ASP, Char(13) ASCII CR
+
+Column (0) Import Code - Currently "AddOneWInvLine"
+Column (1) InvoiceID: Str10;	InvoiceID: Must Match this orders InvoiceID from AddWInv
+Column (2) LEAVE BLANK		???
+Column (3) TransCode: Str1;	Populate with a valid POSIM Transaction code.  See below for allowable values - "S" = Sale
+Column (4) Ordered Qty: double;	enter a whole or decimal number as the qty for each line-item
+Column (5) POSIM ItemID: Str20;	enter the POSIM ItemID
+Column (6) DescCol: Str30;	enter the Description (Limited to 30 char)
+Column (7) levelCol: 0-7;	enter the pricing level for this invoice -- leave blank for default level of zero
+Column (8) priceCol: double;	enter the unit price
+Column (9) extendedCol: double;	leave blank -- this field is calculated as qty * price MINUS any discounts
+Column (10) taxCodeCol: Str1;	enter tax code for this line. predefined 0-4 or valid custom tax code 'refer to client for more info
+Column (11) taxIncCol: double;	Australian Value-Added Tax Included, leave blank
+Column (12) costCol: double;	Cost will be filled in when invoice is posted.
+Column (13) onHandCol: double;	On Hand Inventory will be filled in when invoice is posted.
+Column (14) giftCardIDCol: Str20; Leave empty unless selling a gift card.  If a gift card, enter the gift card ID
+Column (15) ourRetailCol: double; If you want "our retail" to show on the invoice, fill it in here.
+
+//Example Flat Structure:
+
+//Add Working Invoice Line Item
+AddOneWInvLine|WEB55554||S|1|1002|Oakley ski AF\Persi||85||1|||||
+//Add Working Invoice Fright Line Item
+AddOneWInvLine|WEB55554||F|1||Shipping||3.8500|||||||
+//Add Working Invoice Comment Line Item
+AddOneWInvLine|WEB55554||C|1||Email: me@domain.com||0|||||||
+//Add Working Invoice Non-Printable Line Item - Will show up on Working Invoice, but not print.
+AddOneWInvLine|WEB55554||N|1||CCInfo: Visa Exp:05/07 CV2:123||0|||||||
+
+//remember to add "EOF" to signal end of file.
+EOF
+
+//TransCode Values for the "AddOneWInvLine" 
+//To view all transCodes, open Sales Client and click the T button.
+S - Sale 
+F - Freight and Handling 
+C - Comment 
+N - Non-printable comment 
+R - Return an Item 
+M - Misc Charge/Discount 
+L - Labor 
+P - Payment On Account 
+D - Deposit 
+T - Transfer 
+B - Backorder 
+G - Gift Card 
+O - Paid Out 
+A - Cash Advance 
++ - Cash Draw 
+- - Cash Drop 
+E - Backorder Freight 

@@ -1,0 +1,48 @@
+Column (0) Export Code Version - Currently "AddOrUpdateItem2" or "DeleteWebItem"
+Column (1) ItemID : POSIM ItemID - Will be Index that keys Database to this file.
+Column (2) Description :  POSIM Description, 80 char MAX.
+  - 30 character field?
+Column (3) Mfr : Manufacture field from POSIM
+Column (4) MfrNum : Manufacture Num
+Column (5) SuggRetail : $Price filed
+Column (6) OurRetail :  $Price field
+Column (7) AvgRetail :  $Calculated Price field
+// alt UPC?
+Column (8) Misc1 : Miscellaneous 20 char Max
+// department?
+Column (9) Misc2 : Miscellaneous  20 char Max
+Column (10) Misc3 : Miscellaneous 10 char Max
+Column (11) Misc4 : Miscellaneous 10 char Max
+Column (12) Misc5 : Miscellaneous 10 char Max
+// shippable
+Column (13) Available : Calculated in POSIM
+Column (14) OnOrder : Calculated in POSIM
+Column (15) TaxCode : Used to Calc Tax. Must be also used in Order imports
+Column (16) Issuage : From POSIM
+  - W: whole
+  - F: fractional
+Column (17) TrackInv : Y/N
+Column (18) Grid : Links to Style Field in POSIM (Client specific fields)
+Column (19) Row : Links to Row filed in POSIM (Client specific fields)
+Column (20) Col : Links to Col filed in POISM (Client specific fields)
+Column (21) Location : Links to Location filed in POISM (Client specific fields)
+Column (22) Committed : Calculated field 
+Column (23) TransCode : Tran Type - Used in Orders Import - S = Sale, F = Freight, C = Comment (see posim for more)
+Column (24) WebDescription : Web Description from POSIM Web Fields, 255 Char Max
+Column (25) NULL : NOT USED - BLANK - Post 4.4
+Column (26) WebTitle :  '90 char max size
+Column (27) WebOOSMsg : 'web out of stock message - May be blank - if blank use cart default 70 char max
+Column (28) WebPrice : 'May be blank - If blank use OurRetail
+Column (29) VendorID : Post 4.5
+Column (30) VendorNum : Post 4.5
+Column (31) MultiSitesTotalAvailable : Post 4.6 - If using MultiSite TotalAvaliable in all sites
+Column (32) MacRoma Line feed/Cariage return.
+
+Each file will end with "EOF"
+
+Special Note: If Column (0) is "DeleteWebItem",
+that means that the user unchecked the "Web Item" check box in POSIM Inventory Client.
+You should set that item as inactive on the web site.
+
+//sample line
+AddOrUpdateItem2|1015|Intermediate Accounting-3rd Ed|JONES|1234|32.950000|24.720000|24.720000|1234567885|Book|Accounting|Welsch, Zl|A-1|15.000000|0.000000|1|W|Y|Style|Row|Col|Loc|0.000000|S|Our most popular book. Will make accounting come alive, exciting and thriling.  You will want to read it every night before you go to bed.||Intermediate Accounting-3rd Ed|This book is in great demand, shippment when available.|32.95|Johnny|AB1015|0.000000
