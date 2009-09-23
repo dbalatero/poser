@@ -81,41 +81,37 @@ describe Poser::Product do
   end
 
   describe "#available_quantity" do
-    it "should return the number available, AS INTEGERS, you fuckers" do
+    it "should return the number available" do
       @product.available_quantity.should == 15
     end
   end
 
   describe "#on_order_quantity" do
-    it "should return the number that are on order, AS INTEGERS, you fuckers" do
+    it "should return the number that are on order" do
       @product.on_order_quantity.should == 0
     end
   end
 
   describe "#tax_code" do
-    it "should be clear what the fuck this does"
     it "should return the tax code" do
       @product.tax_code.should == '1'
     end
   end
 
   describe "#issuage" do
-    it "should be clear what the fuck this does"
     it "should return the issuage field" do
       @product.issuage.should == 'W'
     end
   end
 
   describe "#track_inventory?" do
-    it "should be clear what the fuck this does"
-    it "should return true/false depending on the value being Y/N" do
+    it "should return true/false depending on whether POSIM is tracking the inventory amount with each order" do
       @product.track_inventory?.should be_true
     end
   end
 
   describe "#grid" do
-    it "should be clear how the grid is used"
-    it "should return the grid identifier" do
+    it "should return the grid identifier ID" do
       @product.grid.should == 'Style'
     end
   end
@@ -133,15 +129,12 @@ describe Poser::Product do
   end
 
   describe "#location" do
-    it "should be clear what the fuck this does"
     it "should return the location field" do
       @product.location.should == 'Loc'
     end
   end
 
   describe "#committed" do
-    it "should be clear what the fuck this does"
-    it "should be determined if this should be an integer"
     it "should return the committed field, as an INTEGER" do
       @product.committed.should == 0
     end
