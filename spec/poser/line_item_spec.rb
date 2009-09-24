@@ -55,6 +55,15 @@ describe Poser::LineItem do
         @line_item.description = "T-Shirt"
       }.should_not raise_error
     end
+
+    it "should be nil if not set" do
+      @line_item.description.should be_nil
+    end
+
+    it "should be maximum 30 characters" do
+      @line_item.description = "t" * 50
+      @line_item.description.size.should == 30
+    end
   end
 
   describe "#pricing_level" do
@@ -155,7 +164,7 @@ describe Poser::LineItem do
   describe "#to_csv" do
     it "should dump out the line item correctly" do
       expected = "AddOneWInvLine|WEB1000||S|10|SKU482|" <<
-                 "My Line Item|0|3.00|30.00|1|||||5.00"
+                 "My Line Item|0|3.00|30.00|1|||||5.00|\r"
       @line_item = Poser::LineItem.new(
         :invoice_id => 'WEB1000',
         :trans_code => 'S',
