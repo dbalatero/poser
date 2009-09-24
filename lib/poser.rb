@@ -9,6 +9,9 @@ module Poser
 end
 
 # require all sub-files
-Dir.glob(File.dirname(__FILE__) + "/poser/**/*.rb").each do |file|
-  require file
+['model',
+  'inventory_upload',
+  'line_item',
+  'product'].each do |file|
+  require File.dirname(__FILE__) + "/poser/#{file}"
 end
