@@ -11,6 +11,8 @@ end
 # require all sub-files
 ['model',
   'inventory_upload',
+  'address',
+  'order',
   'line_item',
   'product'].each do |file|
   require File.dirname(__FILE__) + "/poser/#{file}"
