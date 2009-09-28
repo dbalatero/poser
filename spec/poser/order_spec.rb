@@ -103,6 +103,93 @@ describe Poser::Order do
     end
   end
 
+  describe "#sales_order_id" do
+    it "should always be nil" do
+      @order.sales_order_id.should be_nil
+    end
+  end
+
+  describe "#total_tax" do
+    it "should return amount1 + amount2" do
+      @order.tax_amount1 = 2.00
+      @order.tax_amount2 = 0.01
+      @order.total_tax.should == 2.01
+    end
+
+    it "should handle nil values" do
+      @order.tax_amount1 = 5.00
+      @order.tax_amount2 = nil
+      @order.total_tax.should == 5.00
+    end
+  end
+
+  describe "#discount_by_line_item" do
+    it "should return T if true" do
+      @order.discount_by_line_item = true
+      @order.discount_by_line_item.should == 'T'
+    end
+
+    it "should return F if false" do
+      @order.discount_by_line_item = false
+      @order.discount_by_line_item.should == 'F'
+    end
+  end
+
+  describe "#discount_by_line_item?" do
+    it "should return true if true" do
+      @order.discount_by_line_item = true
+      @order.discount_by_line_item?.should be_true
+    end
+
+    it "should return false if false" do
+      @order.discount_by_line_item = false
+      @order.discount_by_line_item?.should be_false
+    end
+  end
+
+  describe "#billing_id" do
+    it "should always be nil" do
+      @order.billing_id.should be_nil
+    end
+  end
+  
+  describe "#cc_number" do
+    it "should always be nil, as this is deprecated for security" do
+      @order.cc_number.should be_nil
+    end
+  end
+
+  describe "#cc_expiration" do
+    it "should always be nil, as this is deprecated for security" do
+      @order.cc_expiration.should be_nil
+    end
+  end
+
+  describe "#register_number" do
+    it "should always be 0 according to docs" do
+      @order.register_number.should == 0
+    end
+  end
+
+  describe "#cc_authorization" do
+    it "should always be nil, for security deprecations" do
+      @order.cc_authorization.should be_nil
+    end
+  end
+
+  describe "#web_invoice" do
+    it "should always be nil (blank) according to docs" do
+      @order.web_invoice.should be_nil
+    end
+  end
+
+
+  describe "#user" do
+    it "should always be nil, according to docs" do
+      @order.user.should be_nil
+    end
+  end
+
   describe "#to_csv" do
     it "should dump the correct string out" do
       address = Poser::Address.new(
@@ -117,7 +204,7 @@ describe Poser::Order do
         :postal_code => '98115',
         :phone => '206-123-4567',
         :phone_extension => '1234',
-        :email => 'dbalatero@gmail.com'
+        :email => 'fake@address.com'
       )
       @order.shipping_address = address
       @order.billing_address = address
@@ -129,14 +216,16 @@ describe Poser::Order do
       @order.inventory_taxable = true
       @order.tax_rate1 = 0.089
       @order.tax_method = 0 
+      @order.tax_amount1 = 2.54
+      @order.tax_amount2 = nil 
 
       expected = "AddWInv|WEB1000|Zumiez|200030|WEB|WEB|" << # 0-5
                  "09/21/2009 15:30:01|David J Balatero|" << # 6-7
                  "1234 Fake St|Seattle|WA|98115|206-123-4567|" << # 8-12
                  "1234|David J Balatero|1234 Fake St|Seattle|WA|" << # 13-17
                  "98115|206-123-4567|1234|My Terms That A||T|0.089|" << # 18 - 24
-                 "||Apt 12|Apt 12|0|0.00|<fill in>|0.00|<fill in>|" << # 25-33
-                 "||T||David|J|Balatero|USA|David|J|Balatero|USA|" << # 34-45
+                 "||Apt 12|Apt 12|0||2.54||2.54|" << # 25-33
+                 "||F||David|J|Balatero|USA|David|J|Balatero|USA|" << # 34-45
                  "||0||||fake@address.com|fake@address.com"
       @order.to_csv.should == expected
     end
